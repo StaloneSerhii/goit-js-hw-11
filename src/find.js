@@ -1,40 +1,48 @@
 import Notiflix from 'notiflix';
 import axios from 'axios';
 
-const inputForm = document.querySelector("form")
-inputForm.addEventListener("submit", findBase) 
-const gallery = document.querySelector(".gallery")
-const bottunMore = document.querySelector(".load-more")
+const inputForm = document.querySelector('form');
+inputForm.addEventListener('submit', findBase);
+const gallery = document.querySelector('.gallery');
+const bottunMore = document.querySelector('.load-more');
+ bottunMore.addEventListener('click', addButton)
 
-const BASA_URL = "https://pixabay.com/api/";
-const apiKey = "11765026-ad058062c9714826adefbf756"
+const BASA_URL = 'https://pixabay.com/api/';
+const apiKey = '11765026-ad058062c9714826adefbf756';
+let page = 1;
 
-async function findBase (e) {
-    e.preventDefault()
-    
 
-    const {
-        elements: { searchQuery },
-      } = e.currentTarget;
+function findBase(e) {
+  e.preventDefault();
+   const { searchQuery } = e.currentTarget
+   onLoad(searchQuery.value)
+}
 
-    const resp = await fetch(`${BASA_URL}?key=${apiKey}&q=${searchQuery.value}&image_type=photo&orientation=horizontal&safesearch=true`)
-      if(!resp.ok){
-        throw new Error (resp.statusText)
+async function onLoad (page) {
+    console.log(page);
+    const resp = await fetch(
+        `${BASA_URL}?key=${apiKey}&q=${page}&image_type=photo&orientation=horizontal&safesearch=true&per_page=40&page=${page}`
+      )
+      if (!resp.ok) {
+        throw new Error(resp.statusText);
       }
+      const data = await resp.json();
+      console.log(data);
+      createGall(data.hits);
+}
 
-      const data = await resp.json()
-      console.log(data)
-
-      for (let i = 0; i < data.hits.length; i++) {
-  
-      const { webformatURL ,largeImageURL ,tags ,likes ,views ,comments ,downloads } = data.hits[i]
-
-      if (data.total === 0) {
-        Notiflix.Notify.failure("Sorry, there are no images matching your search query. Please try again.");
-        console.log("Sorry, there are no images matching your search query. Please try again.");
-      } else {
-        const showGallery = `
-        <div class="photo-card">
+function createGall(data) {
+  const showGallery = data.map(
+      ({
+        webformatURL,
+        largeImageURL,
+        tags,
+        likes,
+        views,
+        comments,
+        downloads,
+      }) => 
+        `<div class="photo-card">
   <img src="${webformatURL}" alt="${tags}" loading="lazy" />
   <div class="info">
     <p class="info-item">
@@ -50,21 +58,14 @@ async function findBase (e) {
       <b>Downloads ${downloads}</b>
     </p>
   </div>
-</div>`
+</div>`).join('')
 
-        gallery.innerHTML += showGallery
-      }
-    }
+      gallery.innerHTML += showGallery
+      bottunMore.hidden= false
+    
 }
 
-
-
-
-// "Sorry, there are no images matching your search query. Please try again."
-// webformatURL - посилання на маленьке зображення для списку карток.
-// largeImageURL - посилання на велике зображення.
-// tags - рядок з описом зображення. Підійде для атрибуту alt.
-// likes - кількість лайків.
-// views - кількість переглядів.
-// comments - кількість коментарів.
-// downloads - кількість завантажень.
+async function addButton () {
+    page += 1;
+    onLoad(page)
+}
