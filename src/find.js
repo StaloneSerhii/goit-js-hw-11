@@ -10,18 +10,20 @@ const bottunMore = document.querySelector('.load-more');
 const BASA_URL = 'https://pixabay.com/api/';
 const apiKey = '11765026-ad058062c9714826adefbf756';
 let page = 1;
-
+let searchQuery  = '';
 
 function findBase(e) {
   e.preventDefault();
-   const { searchQuery } = e.currentTarget
-   onLoad(searchQuery.value)
+  console.log(e.target.searchQuery.value);
+    searchQuery = e.target.searchQuery.value
+    console.log(searchQuery)
+   onLoad(searchQuery)
 }
 
 async function onLoad (page) {
     console.log(page);
     const resp = await fetch(
-        `${BASA_URL}?key=${apiKey}&q=${page}&image_type=photo&orientation=horizontal&safesearch=true&per_page=40&page=${page}`
+        `${BASA_URL}?key=${apiKey}&q=${searchQuery}&image_type=photo&orientation=horizontal&safesearch=true&per_page=5&page=${page}`
       )
       if (!resp.ok) {
         throw new Error(resp.statusText);
