@@ -1,41 +1,45 @@
 import Notiflix from 'notiflix';
-import axios from 'axios';
+import './css/style.css';
+import SimpleLightbox from "simplelightbox";
+import "simplelightbox/dist/simple-lightbox.min.css";
+import { onLoad } from './fetchContainer';
 
 const inputForm = document.querySelector('form');
-inputForm.addEventListener('submit', findBase);
 const gallery = document.querySelector('.gallery');
 const bottunMore = document.querySelector('.load-more');
- bottunMore.addEventListener('click', addButton)
+bottunMore.addEventListener('click', addButton)
+inputForm.addEventListener('submit', findBase);
 
-const BASA_URL = 'https://pixabay.com/api/';
-const apiKey = '11765026-ad058062c9714826adefbf756';
+
+
 let page = 1;
-let searchQuery  = '';
 
-function findBase(e) {
+
+async function findBase(e) {
   e.preventDefault();
-  console.log(e.target.searchQuery.value);
-    searchQuery = e.target.searchQuery.value
-    console.log(searchQuery)
-   onLoad(searchQuery)
+  gallery.innerHTML = ''
+  page = 1
+
+  showImg(e.target.searchQuery.value, page)
+
 }
 
-async function onLoad (page) {
-    console.log(page);
-    const resp = await fetch(
-        `${BASA_URL}?key=${apiKey}&q=${searchQuery}&image_type=photo&orientation=horizontal&safesearch=true&per_page=5&page=${page}`
-      )
-      if (!resp.ok) {
-        throw new Error(resp.statusText);
-      }
-      const data = await resp.json();
-      console.log(data);
-      createGall(data.hits);
+async function showImg (qwery,page) {
+      bottunMore.hidden = false
+try {
+  const data = await onLoad(qwery,page)
+    renderImages(data)
+    console.log(data);
+}catch(error) {console.log(error)}
+      //  renderImages(data.hits);
+       gallerry.refresh();
 }
 
-function createGall(data) {
-  const showGallery = data.map(
-      ({
+function renderImages(data) {
+
+  const markup = data.data.hits
+    .map(image => {
+      const {
         webformatURL,
         largeImageURL,
         tags,
@@ -43,31 +47,43 @@ function createGall(data) {
         views,
         comments,
         downloads,
-      }) => 
-        `<div class="photo-card">
-  <img src="${webformatURL}" alt="${tags}" loading="lazy" />
+      } = image;
+
+      return `<div class="photo-card">
+  <a href="${largeImageURL}" class="gallery__item"><img onclick="return false"; src="${webformatURL}" alt="${tags}" class="gallery__image"  loading="lazy" />
   <div class="info">
     <p class="info-item">
-      <b>Likes ${likes}</b>
+      <b>Likes</b>
+      ${likes}
     </p>
     <p class="info-item">
-      <b>Views ${views}</b>
+      <b>Views</b>
+      ${views}
     </p>
     <p class="info-item">
-      <b>Comments ${comments}</b>
+      <b>Comments</b>
+      ${comments}
     </p>
     <p class="info-item">
-      <b>Downloads ${downloads}</b>
+      <b>Downloads</b>
+      ${downloads}
     </p>
   </div>
-</div>`).join('')
-
-      gallery.innerHTML += showGallery
-      bottunMore.hidden= false
-    
+</div></a>`;
+    })
+    .join('');
+    addButton()
+  gallery.insertAdjacentHTML('beforeend', markup);
 }
 
-async function addButton () {
+function addButton () {
+  
     page += 1;
-    onLoad(page)
+
 }
+
+
+let gallerry = new SimpleLightbox('div.gallery a', {
+  captionsData: 'alt',
+  captionDelay: 500,
+});
