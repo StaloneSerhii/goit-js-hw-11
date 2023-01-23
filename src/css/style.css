@@ -5,7 +5,7 @@ body {
 .gallery {
   display: flex;
   flex-wrap: wrap;
-  gap: 30px;
+  gap: 10px;
 
   justify-content: center;
   margin-top: 12px;

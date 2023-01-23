@@ -30,7 +30,6 @@ async function showImg (qwery,page) {
 try {
   const data = await onLoad(qwery,page)
     renderImages(data)
-    console.log(data);
 }catch(error) {console.log(error)}
        gallerry.refresh();
 }
