@@ -3,22 +3,23 @@ import './css/style.css';
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
 import { onLoad } from './fetchContainer';
+import { message } from './massage';
 
 const inputForm = document.querySelector('form');
 const gallery = document.querySelector('.gallery');
-const bottunMore = document.querySelector('.load-more');
+export const bottunMore = document.querySelector('.load-more');
 bottunMore.addEventListener('click', addButton)
 inputForm.addEventListener('submit', findBase);
 
 
-
+let qwest = ''
 let page = 1;
 
 
 async function findBase(e) {
   e.preventDefault();
   gallery.innerHTML = ''
-  page = 1
+  
 
   showImg(e.target.searchQuery.value, page)
 
@@ -26,6 +27,7 @@ async function findBase(e) {
 
 async function showImg (qwery,page) {
       bottunMore.hidden = false
+      qwest = qwery
 try {
   const data = await onLoad(qwery,page)
     renderImages(data)
@@ -36,7 +38,7 @@ try {
 }
 
 function renderImages(data) {
-
+message(page,data.data.hits)
   const markup = data.data.hits
     .map(image => {
       const {
@@ -72,14 +74,13 @@ function renderImages(data) {
 </div></a>`;
     })
     .join('');
-    addButton()
+
   gallery.insertAdjacentHTML('beforeend', markup);
 }
 
 function addButton () {
-  
     page += 1;
-
+    showImg(qwest,page)
 }
 
 
