@@ -19,14 +19,13 @@ let page = 1;
 async function findBase(e) {
   e.preventDefault();
   gallery.innerHTML = ''
-  
+  page = 1
 
   showImg(e.target.searchQuery.value, page)
 
 }
 
 async function showImg (qwery,page) {
-      bottunMore.hidden = false
       qwest = qwery
 try {
   const data = await onLoad(qwery,page)
@@ -37,7 +36,10 @@ try {
 }
 
 function renderImages(data) {
-message(page,data.data.hits)
+
+const {totalHits, hits} = data.data
+message(page, hits, totalHits)
+
   const markup = data.data.hits
     .map(image => {
       const {
