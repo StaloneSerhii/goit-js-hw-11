@@ -88,3 +88,5 @@ let gallerry = new SimpleLightbox('div.gallery a', {
   captionsData: 'alt',
   captionDelay: 500,
 });
+
+

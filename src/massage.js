@@ -16,5 +16,6 @@ export function message (page,total,totalHits) {
     } 
     if (page === 1 && total.length === 0 && totalHits === 0) {
         Notiflix.Notify.failure("Sorry, there are no images matching your search query. Please try again.");
+        bottunMore.hidden = true 
     }
 }
