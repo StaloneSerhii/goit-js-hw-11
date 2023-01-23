@@ -1,10 +1,10 @@
-import Notiflix from 'notiflix';
 import './css/style.css';
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
 import { onLoad } from './fetchContainer';
 import { message } from './massage';
 import { scroll } from "./scroll";
+
 const inputForm = document.querySelector('form');
 const gallery = document.querySelector('.gallery');
 export const bottunMore = document.querySelector('.load-more');
@@ -16,10 +16,11 @@ let qwest = ''
 let page = 1;
 
 async function findBase(e) {
+
   e.preventDefault();
   gallery.innerHTML = ''
   page = 1
-
+  bottunMore.hidden = true 
   showImg(e.target.searchQuery.value, page)
 
 }
@@ -29,6 +30,9 @@ async function showImg (qwery,page) {
 try {
   const data = await onLoad(qwery,page)
     renderImages(data)
+if (page > 1) {
+  scroll()
+}
 }catch(error) {console.log(error)}
        gallerry.refresh();
 }
@@ -73,13 +77,16 @@ message(page, hits, totalHits)
 </div></a>`;
     })
     .join('');
-
+  
   gallery.insertAdjacentHTML('beforeend', markup);
 }
+ function addButton () {
 
-function addButton () {
     page += 1;
+    
     showImg(qwest,page)
+   
+
 }
 
 
@@ -87,12 +94,3 @@ let gallerry = new SimpleLightbox('div.gallery a', {
   captionsData: 'alt',
   captionDelay: 500,
 });
-
-
-
-// const { height: cardHeight } = document.querySelector(".gallery").firstElementChild.getBoundingClientRect();
-// console.log(cardHeight);
-// // window.scrollBy({
-// //   top: cardHeight * 2,
-// //   behavior: "smooth",
-// // });
