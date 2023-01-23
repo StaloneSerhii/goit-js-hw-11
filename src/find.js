@@ -4,7 +4,7 @@ import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
 import { onLoad } from './fetchContainer';
 import { message } from './massage';
-
+import { scroll } from "./scroll";
 const inputForm = document.querySelector('form');
 const gallery = document.querySelector('.gallery');
 export const bottunMore = document.querySelector('.load-more');
@@ -14,7 +14,6 @@ inputForm.addEventListener('submit', findBase);
 
 let qwest = ''
 let page = 1;
-
 
 async function findBase(e) {
   e.preventDefault();
@@ -90,3 +89,10 @@ let gallerry = new SimpleLightbox('div.gallery a', {
 });
 
 
+
+// const { height: cardHeight } = document.querySelector(".gallery").firstElementChild.getBoundingClientRect();
+// console.log(cardHeight);
+// // window.scrollBy({
+// //   top: cardHeight * 2,
+// //   behavior: "smooth",
+// // });
