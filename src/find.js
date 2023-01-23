@@ -1,46 +1,44 @@
 import './css/style.css';
-import SimpleLightbox from "simplelightbox";
-import "simplelightbox/dist/simple-lightbox.min.css";
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
 import { onLoad } from './fetchContainer';
 import { message } from './massage';
-import { scroll } from "./scroll";
+import { scroll } from './scroll';
 
 const inputForm = document.querySelector('form');
 const gallery = document.querySelector('.gallery');
 export const bottunMore = document.querySelector('.load-more');
-bottunMore.addEventListener('click', addButton)
+bottunMore.addEventListener('click', addButton);
 inputForm.addEventListener('submit', findBase);
 
-
-let qwest = ''
+let qwest = '';
 let page = 1;
 
 async function findBase(e) {
-
   e.preventDefault();
-  gallery.innerHTML = ''
-  page = 1
-  bottunMore.hidden = true 
-  showImg(e.target.searchQuery.value, page)
-
+  gallery.innerHTML = '';
+  page = 1;
+  bottunMore.hidden = true;
+  showImg(e.target.searchQuery.value, page);
 }
 
-async function showImg (qwery,page) {
-      qwest = qwery
-try {
-  const data = await onLoad(qwery,page)
-    renderImages(data)
-if (page > 1) {
-  scroll()
-}
-}catch(error) {console.log(error)}
-       gallerry.refresh();
+async function showImg(qwery, page) {
+  qwest = qwery;
+  try {
+    const data = await onLoad(qwery, page);
+    renderImages(data);
+    if (page > 1) {
+      scroll();
+    }
+  } catch (error) {
+    console.log(error);
+  }
+  gallerry.refresh();
 }
 
 function renderImages(data) {
-
-const {totalHits, hits} = data.data
-message(page, hits, totalHits)
+  const { totalHits, hits } = data.data;
+  message(page, hits, totalHits);
 
   const markup = data.data.hits
     .map(image => {
@@ -77,18 +75,14 @@ message(page, hits, totalHits)
 </div></a>`;
     })
     .join('');
-  
+
   gallery.insertAdjacentHTML('beforeend', markup);
 }
- function addButton () {
+function addButton() {
+  page += 1;
 
-    page += 1;
-    
-    showImg(qwest,page)
-   
-
+  showImg(qwest, page);
 }
-
 
 let gallerry = new SimpleLightbox('div.gallery a', {
   captionsData: 'alt',
