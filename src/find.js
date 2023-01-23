@@ -33,7 +33,6 @@ try {
     renderImages(data)
     console.log(data);
 }catch(error) {console.log(error)}
-      //  renderImages(data.hits);
        gallerry.refresh();
 }
 
